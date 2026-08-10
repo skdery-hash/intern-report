@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>腾娱J3 - 27届实习生招聘进展报告</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --primary: #1a73e8;
+    --success: #0d9488;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text: #1e293b;
+    --text-secondary: #64748b;
+    --border: #e2e8f0;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.08), 0 4px 6px -4px rgba(0,0,0,.04);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+  
+  .header { background: linear-gradient(135deg, #1e3a5f, #2563eb); color: #fff; padding: 40px 0 32px; }
+  .header .wrap { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+  .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+  .header .subtitle { font-size: 14px; opacity: .8; }
+  .header .meta { margin-top: 16px; display: flex; gap: 24px; font-size: 13px; opacity: .75; flex-wrap: wrap; }
+
+  .container { max-width: 1280px; margin: 0 auto; padding: 24px; }
+
+  .summary-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+  .card { background: var(--card-bg); border-radius: 12px; padding: 20px 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .card .label { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
+  .card .value { font-size: 32px; font-weight: 700; }
+  .card .value.blue { color: var(--primary); }
+  .card .value.teal { color: var(--success); }
+  .card .value.amber { color: var(--warning); }
+  .card .value.red { color: var(--danger); }
+  .card .sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+  .section { background: var(--card-bg); border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .section h2 { font-size: 18px; font-weight: 600; margin-bottom: 16px; color: var(--text); padding-bottom: 12px; border-bottom: 2px solid var(--border); }
+  .section h2 .icon { margin-right: 8px; }
+
+  .charts-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px; }
+  .chart-box { background: var(--card-bg); border-radius: 12px; padding: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .chart-box h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+  .chart-box canvas { max-height: 320px; }
+  .chart-box.full-width { grid-column: 1 / -1; }
+  .chart-box.full-width canvas { max-height: 350px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead th { background: #f1f5f9; padding: 10px 12px; text-align: left; font-weight: 600; color: var(--text-secondary); font-size: 12px; text-transform: uppercase; letter-spacing: .5px; border-bottom: 2px solid var(--border); }
+  tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  tbody tr:hover { background: #f8fafc; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 500; }
+  .badge-green { background: #d1fae5; color: #065f46; }
+  .badge-blue { background: #dbeafe; color: #1e40af; }
+  .badge-gray { background: #f1f5f9; color: #475569; }
+  .badge-amber { background: #fef3c7; color: #92400e; }
+
+  .progress-bar { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+  .progress-bar .fill { height: 100%; border-radius: 4px; transition: width .3s; }
+  .fill-green { background: #10b981; }
+  .fill-blue { background: #3b82f6; }
+  .fill-amber { background: #f59e0b; }
+  .fill-red { background: #ef4444; }
+
+  .footer { text-align: center; padding: 20px; font-size: 12px; color: var(--text-secondary); }
+  .footer a { color: var(--primary); text-decoration: none; }
+
+  @media (max-width: 768px) {
+    .summary-cards { grid-template-columns: repeat(2, 1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+    .card .value { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="wrap">
+    <h1>腾娱J3 - 27届实习生招聘进展报告</h1>
+    <div class="subtitle">云梦工作室 · 云梦J3业务中心</div>
+    <div class="meta">
+      <span>数据截止：2026年8月10日</span>
+      <span>筛选条件：27届及以后（毕业时间26年9月及以后）+ 流程状态=已接受</span>
+      <span>数据来源：企微在线表格</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Summary Cards (3 cards, 在职人数已删除) -->
+  <div class="summary-cards">
+    <div class="card">
+      <div class="label">已接受Offer总数</div>
+      <div class="value blue">32</div>
+      <div class="sub">27届及以后实习生</div>
+    </div>
+    <div class="card">
+      <div class="label">总需求人数</div>
+      <div class="value teal">120</div>
+      <div class="sub">全部岗位需求</div>
+    </div>
+    <div class="card">
+      <div class="label">整体完成率</div>
+      <div class="value amber">26.7%</div>
+      <div class="sub">32 / 120</div>
+    </div>
+  </div>
+
+  <!-- Project Group Completion (移到图表前面) -->
+  <div class="section">
+    <h2>各项目组完成进度</h2>
+    <table id="groupTable">
+      <thead>
+        <tr>
+          <th>项目组</th>
+          <th>已发Offer</th>
+          <th>需求总数</th>
+          <th>完成率</th>
+          <th>进度</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Charts Row: City (stacked bar) & Job Category -->
+  <div class="charts-row">
+    <div class="chart-box full-width">
+      <h3>各城市Offer分布 vs 需求</h3>
+      <canvas id="cityChart"></canvas>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="chart-box full-width">
+      <h3>各职位类Offer分布 vs 需求</h3>
+      <canvas id="jobChart"></canvas>
+    </div>
+  </div>
+
+  <!-- City & Category Cross-table -->
+  <div class="section">
+    <h2>城市 × 职位类 已完成Offer分布</h2>
+    <table id="crossTable">
+      <thead>
+        <tr>
+          <th>职位类</th>
+          <th>深圳</th>
+          <th>武汉</th>
+          <th>成都</th>
+          <th>上海</th>
+          <th>合计</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Offer Detail List -->
+  <div class="section">
+    <h2>已接受Offer明细（27届及以后）</h2>
+    <table id="offerTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>姓名</th>
+          <th>学校</th>
+          <th>学历</th>
+          <th>工作地点</th>
+          <th>项目组</th>
+          <th>团队</th>
+          <th>员工状态</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Demand Overview -->
+  <div class="section">
+    <h2>需求总览</h2>
+    <table id="demandTable">
+      <thead>
+        <tr>
+          <th>项目组</th>
+          <th>服务产品</th>
+          <th>职位类</th>
+          <th>工作地点</th>
+          <th>需求人数</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    腾娱J3 · 27届实习生招聘进展报告 &nbsp;|&nbsp; 数据来源：<a href="https://doc.weixin.qq.com/sheet/e3_APAA_AaSACQCNELPehDAIQbyIfqXu" target="_blank">企微在线表格</a> &nbsp;|&nbsp; 生成时间：2026-08-10
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const data = {
+  summary: { total_offers: 32, total_demand: 120, overall_rate: 26.7 },
+  city_stats: {
+    labels: ["深圳","武汉","成都","上海"],
+    offers: [15, 11, 5, 1],
+    demand: [57, 32, 31, 0]
+  },
+  job_stats: {
+    labels: ["游戏美术","游戏策划","技术美术(TA)","UI/视觉设计","游戏客户端开发","测试与质量管理","项目管理","游戏运营"],
+    offers: [16, 6, 3, 2, 2, 1, 1, 1],
+    demand: [56, 7, 3, 15, 3, 10, 2, 21]
+  },
+  group_completion: [
+    {name: "D项目组", offers: 20, demand: 34, rate: 58.8},
+    {name: "N项目组", offers: 5, demand: 20, rate: 25.0},
+    {name: "中台美术组", offers: 5, demand: 18, rate: 27.8},
+    {name: "质量管理组", offers: 1, demand: 10, rate: 10.0},
+    {name: "运营组", offers: 1, demand: 24, rate: 4.2},
+    {name: "S项目组", offers: 0, demand: 12, rate: 0.0},
+    {name: "C项目组", offers: 0, demand: 2, rate: 0.0}
+  ],
+  cross_table: [
+    {cat: "游戏美术", sz: 6, wh: 5, cd: 5, sh: 0},
+    {cat: "游戏策划", sz: 3, wh: 2, cd: 0, sh: 1},
+    {cat: "技术美术(TA)", sz: 3, wh: 0, cd: 0, sh: 0},
+    {cat: "UI/视觉设计", sz: 2, wh: 0, cd: 0, sh: 0},
+    {cat: "游戏客户端开发", sz: 0, wh: 2, cd: 0, sh: 0},
+    {cat: "测试与质量管理", sz: 0, wh: 1, cd: 0, sh: 0},
+    {cat: "项目管理", sz: 1, wh: 0, cd: 0, sh: 0},
+    {cat: "游戏运营", sz: 0, wh: 1, cd: 0, sh: 0}
+  ],
+  offers: [
+    {name:"乔逸文", school:"许昌学院", edu:"本科", city:"深圳", project:"中台美术组", team:"UI组-四组S项目组", status:"待入职"},
+    {name:"王宇航", school:"北海艺术设计学院", edu:"本科", city:"深圳", project:"D项目组", team:"美术组-场景一组", status:"待入职"},
+    {name:"张凯瑞", school:"湖南工商大学", edu:"硕士研究生", city:"深圳", project:"D项目组", team:"美术组-场景一组", status:"在职"},
+    {name:"高可欣", school:"武汉纺织大学外经贸学院", edu:"本科", city:"武汉", project:"N项目组", team:"端游美术-3D角色组", status:"在职"},
+    {name:"褚奕轲", school:"华中农业大学", edu:"本科", city:"上海", project:"D项目组", team:"策划组-策划三组", status:"在职"},
+    {name:"田沁松", school:"南京理工大学", edu:"本科", city:"深圳", project:"D项目组", team:"策划组-策划二组", status:"在职"},
+    {name:"梁欣彤", school:"梧州学院", edu:"本科", city:"深圳", project:"中台美术组", team:"UI组-四组S项目组", status:"在职"},
+    {name:"周展冲", school:"湖北美术学院", edu:"本科", city:"武汉", project:"N项目组", team:"端游美术-3D场景组", status:"在职"},
+    {name:"李柏儒", school:"格拉斯哥大学", edu:"硕士研究生", city:"深圳", project:"中台美术组", team:"技术美术组-技术美术一组", status:"待入职"},
+    {name:"陈甲春", school:"广西民族大学", edu:"本科", city:"深圳", project:"D项目组", team:"美术组-原画一组", status:"在职"},
+    {name:"王杰", school:"四川音乐学院成都美术学院", edu:"本科", city:"深圳", project:"D项目组", team:"美术组-场景一组", status:"在职"},
+    {name:"陈家帅", school:"广东技术师范大学", edu:"本科", city:"深圳", project:"D项目组", team:"美术组-场景一组", status:"在职"},
+    {name:"吴小雪", school:"中南民族大学", edu:"本科", city:"武汉", project:"质量管理组", team:"质量管理一组", status:"在职"},
+    {name:"黄温旎", school:"湖北工业大学", edu:"本科", city:"武汉", project:"D项目组", team:"策划组-策划三组", status:"在职"},
+    {name:"贾子木", school:"西安电子科技大学", edu:"硕士研究生", city:"深圳", project:"D项目组", team:"项目管理组-项目管理一组", status:"在职"},
+    {name:"何书帆", school:"武汉理工大学", edu:"硕士研究生", city:"武汉", project:"D项目组", team:"客户端组-客户端三组", status:"在职"},
+    {name:"孔雨迪", school:"山东工艺美术学院", edu:"本科", city:"深圳", project:"中台美术组", team:"技术美术组-技术美术二组", status:"在职"},
+    {name:"李彦斌", school:"湖南工商大学", edu:"本科", city:"深圳", project:"中台美术组", team:"技术美术组-技术美术二组", status:"在职"},
+    {name:"白筱雅", school:"江西财经大学", edu:"本科", city:"成都", project:"D项目组", team:"美术组-场景三组", status:"在职"},
+    {name:"唐睿恒", school:"成都工业学院", edu:"本科", city:"成都", project:"D项目组", team:"美术组-场景三组", status:"在职"},
+    {name:"周奥成", school:"武汉科技大学", edu:"硕士研究生", city:"武汉", project:"D项目组", team:"策划组-策划三组", status:"在职"},
+    {name:"赵蔡宁", school:"四川美术学院", edu:"本科", city:"成都", project:"D项目组", team:"美术组-场景三组", status:"在职"},
+    {name:"孙鸣翀", school:"信阳师范大学", edu:"本科", city:"武汉", project:"D项目组", team:"美术组-3D武器组", status:"在职"},
+    {name:"阮佳俊", school:"宁波大学", edu:"本科", city:"深圳", project:"D项目组", team:"策划组-策划一组", status:"在职"},
+    {name:"贺子芪", school:"四川师范大学", edu:"本科", city:"武汉", project:"N项目组", team:"端游美术-原画组", status:"在职"},
+    {name:"贾珂玮", school:"信阳师范大学", edu:"本科", city:"成都", project:"N项目组", team:"手游美术-3D角色二组", status:"在职"},
+    {name:"周竖轩", school:"湖南科技大学", edu:"本科", city:"深圳", project:"D项目组", team:"美术组-场景一组", status:"在职"},
+    {name:"吴晋娆", school:"西北民族大学", edu:"本科", city:"成都", project:"D项目组", team:"美术组-场景三组", status:"在职"},
+    {name:"王一达", school:"武汉大学", edu:"硕士研究生", city:"武汉", project:"D项目组", team:"客户端组-客户端三组", status:"在职"},
+    {name:"潘鑫哲", school:"西蒙菲莎大学", edu:"本科", city:"武汉", project:"运营组", team:"N项目运营组-N项目产品运营组", status:"在职"},
+    {name:"廖鹏程", school:"重庆邮电大学", edu:"本科", city:"深圳", project:"D项目组", team:"策划组-策划二组", status:"离职"},
+    {name:"刘亦舒", school:"—", edu:"—", city:"武汉", project:"N项目组", team:"端游美术-3D动作组", status:"离职"}
+  ],
+  demand: [
+    {project:"质量管理组", product:"三角洲行动", category:"测试开发", city:"深圳", count:1},
+    {project:"质量管理组", product:"三角洲行动", category:"游戏测试", city:"深圳", count:1},
+    {project:"质量管理组", product:"三角洲行动", category:"游戏测试", city:"深圳", count:2},
+    {project:"质量管理组", product:"三角洲行动", category:"游戏测试", city:"武汉", count:1},
+    {project:"质量管理组", product:"三角洲行动", category:"测试开发", city:"武汉", count:1},
+    {project:"质量管理组", product:"在研ue5微恐射击", category:"测试开发", city:"深圳", count:3},
+    {project:"质量管理组", product:"逆战：未来", category:"测试开发", city:"深圳", count:1},
+    {project:"D项目组", product:"三角洲行动", category:"研发项目管理", city:"深圳", count:1},
+    {project:"D项目组", product:"三角洲行动", category:"研发项目管理", city:"深圳", count:1},
+    {project:"D项目组", product:"三角洲行动", category:"游戏策划", city:"武汉", count:2},
+    {project:"D项目组", product:"三角洲行动", category:"游戏策划", city:"深圳", count:2},
+    {project:"D项目组", product:"三角洲行动", category:"游戏客户端开发", city:"武汉", count:2},
+    {project:"D项目组", product:"三角洲行动", category:"动画", city:"武汉", count:3},
+    {project:"D项目组", product:"三角洲行动", category:"动画", city:"成都", count:3},
+    {project:"D项目组", product:"三角洲行动", category:"3D场景设计", city:"深圳", count:3},
+    {project:"D项目组", product:"三角洲行动", category:"3D场景设计", city:"成都", count:5},
+    {project:"D项目组", product:"三角洲行动", category:"2D角色设计", city:"深圳", count:2},
+    {project:"D项目组", product:"三角洲行动", category:"2D场景设计", city:"深圳", count:4},
+    {project:"D项目组", product:"三角洲行动", category:"3D场景设计", city:"武汉", count:3},
+    {project:"D项目组", product:"三角洲行动", category:"3D角色设计", city:"成都", count:3},
+    {project:"N项目组", product:"逆战", category:"游戏策划", city:"武汉", count:2},
+    {project:"N项目组", product:"逆战", category:"2D角色设计", city:"武汉", count:2},
+    {project:"N项目组", product:"逆战", category:"2D场景设计", city:"武汉", count:2},
+    {project:"N项目组", product:"逆战", category:"3D角色设计", city:"武汉", count:2},
+    {project:"N项目组", product:"逆战", category:"3D场景设计", city:"武汉", count:2},
+    {project:"N项目组", product:"逆战", category:"动画", city:"武汉", count:2},
+    {project:"N项目组", product:"逆战：未来", category:"3D场景设计", city:"成都", count:2},
+    {project:"N项目组", product:"逆战：未来", category:"3D角色设计", city:"成都", count:2},
+    {project:"N项目组", product:"逆战：未来", category:"2D角色设计", city:"成都", count:2},
+    {project:"N项目组", product:"逆战：未来", category:"2D场景设计", city:"成都", count:2},
+    {project:"C项目组", product:"使命召唤", category:"3D角色设计", city:"深圳", count:1},
+    {project:"C项目组", product:"使命召唤", category:"游戏策划", city:"深圳", count:1},
+    {project:"中台美术组", product:"DF", category:"多媒体设计", city:"深圳", count:3},
+    {project:"中台美术组", product:"DF", category:"视觉设计", city:"深圳", count:2},
+    {project:"运营组", product:"DF", category:"渠道运营", city:"深圳", count:2},
+    {project:"运营组", product:"三角洲行动", category:"游戏运营", city:"深圳", count:8},
+    {project:"运营组", product:"逆战", category:"游戏运营", city:"武汉", count:4},
+    {project:"运营组", product:"逆战未来", category:"游戏运营", city:"武汉", count:4},
+    {project:"运营组", product:"三角洲行动", category:"数据分析", city:"深圳", count:3},
+    {project:"运营组", product:"逆战：未来", category:"游戏运营", city:"深圳", count:3},
+    {project:"中台美术组", product:"穿越火线手游", category:"视觉设计", city:"深圳", count:2},
+    {project:"中台美术组", product:"三角洲行动", category:"视觉设计", city:"深圳", count:2},
+    {project:"S项目组", product:"CFM", category:"2D角色设计", city:"成都", count:3},
+    {project:"S项目组", product:"CFM", category:"2D场景设计", city:"成都", count:1},
+    {project:"S项目组", product:"CFM", category:"3D场景设计", city:"成都", count:2},
+    {project:"S项目组", product:"CFM", category:"3D角色设计", city:"成都", count:3},
+    {project:"S项目组", product:"CFM", category:"动画", city:"成都", count:1},
+    {project:"S项目组", product:"CFM", category:"特效", city:"成都", count:1},
+    {project:"S项目组", product:"CFM", category:"游戏客户端开发", city:"成都", count:1},
+    {project:"中台美术组", product:"使命召唤", category:"交互设计", city:"深圳", count:1},
+    {project:"中台美术组", product:"使命召唤", category:"视觉设计", city:"深圳", count:1},
+    {project:"中台美术组", product:"逆战", category:"交互设计", city:"深圳", count:1},
+    {project:"中台美术组", product:"逆战", category:"视觉设计", city:"深圳", count:1},
+    {project:"中台美术组", product:"在研ue5微恐射击", category:"视觉设计", city:"深圳", count:2},
+    {project:"中台美术组", product:"三角洲行动", category:"TA", city:"深圳", count:1},
+    {project:"中台美术组", product:"proj", category:"TA", city:"深圳", count:1},
+    {project:"中台美术组", product:"在研ue5微恐射击", category:"TA", city:"深圳", count:1}
+  ]
+};
+
+// ===== CHARTS =====
+Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif';
+Chart.defaults.font.size = 12;
+
+// City Stacked Bar Chart (已完成Offer + 剩余需求)
+const cityRemaining = data.city_stats.demand.map((d, i) => Math.max(d - data.city_stats.offers[i], 0));
+new Chart(document.getElementById('cityChart'), {
+  type: 'bar',
+  data: {
+    labels: data.city_stats.labels,
+    datasets: [
+      { label: '已完成Offer', data: data.city_stats.offers, backgroundColor: '#3b82f6', borderRadius: {topLeft: 0, topRight: 0, bottomLeft: 6, bottomRight: 6} },
+      { label: '剩余需求', data: cityRemaining, backgroundColor: '#e2e8f0', borderRadius: {topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0} }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: {
+        callbacks: {
+          label: function(ctx) {
+            const total = data.city_stats.demand[ctx.dataIndex];
+            const offer = data.city_stats.offers[ctx.dataIndex];
+            const pct = total > 0 ? (offer / total * 100).toFixed(1) : '—';
+            return ctx.dataset.label + ': ' + ctx.raw + '  |  完成率: ' + pct + '%';
+          }
+        }
+      }
+    },
+    scales: {
+      x: { stacked: true, grid: { display: false } },
+      y: { stacked: true, beginAtZero: true, grid: { color: '#f1f5f9' }, title: { display: true, text: '人数' } }
+    }
+  }
+});
+
+// Job Category Horizontal Bar Chart
+new Chart(document.getElementById('jobChart'), {
+  type: 'bar',
+  data: {
+    labels: data.job_stats.labels,
+    datasets: [
+      { label: '已发Offer', data: data.job_stats.offers, backgroundColor: '#10b981', borderRadius: 6 },
+      { label: '需求人数', data: data.job_stats.demand, backgroundColor: '#94a3b8', borderRadius: 6 }
+    ]
+  },
+  options: {
+    responsive: true,
+    indexAxis: 'y',
+    plugins: { legend: { position: 'bottom' } },
+    scales: { x: { beginAtZero: true, grid: { color: '#f1f5f9' } }, y: { grid: { display: false } } }
+  }
+});
+
+// ===== TABLES =====
+
+// Group completion table
+const groupTbody = document.querySelector('#groupTable tbody');
+data.group_completion.forEach(g => {
+  const badgeClass = g.rate >= 50 ? 'badge-green' : (g.rate >= 20 ? 'badge-blue' : (g.rate > 0 ? 'badge-amber' : 'badge-gray'));
+  const fillClass = g.rate >= 50 ? 'fill-green' : (g.rate >= 20 ? 'fill-blue' : (g.rate > 0 ? 'fill-amber' : 'fill-red'));
+  groupTbody.innerHTML += `<tr>
+    <td><strong>${g.name}</strong></td>
+    <td>${g.offers}</td>
+    <td>${g.demand}</td>
+    <td><span class="badge ${badgeClass}">${g.rate.toFixed(1)}%</span></td>
+    <td><div class="progress-bar"><div class="fill ${fillClass}" style="width:${Math.max(g.rate, 2)}%"></div></div></td>
+  </tr>`;
+});
+
+// Cross table
+const crossTbody = document.querySelector('#crossTable tbody');
+data.cross_table.forEach(row => {
+  const total = row.sz + row.wh + row.cd + row.sh;
+  crossTbody.innerHTML += `<tr>
+    <td><strong>${row.cat}</strong></td>
+    <td>${row.sz || '-'}</td>
+    <td>${row.wh || '-'}</td>
+    <td>${row.cd || '-'}</td>
+    <td>${row.sh || '-'}</td>
+    <td><strong>${total}</strong></td>
+  </tr>`;
+});
+crossTbody.innerHTML += `<tr style="font-weight:700; background:#f8fafc;">
+  <td>合计</td>
+  <td><strong>15</strong></td><td><strong>11</strong></td><td><strong>5</strong></td><td><strong>1</strong></td><td><strong>32</strong></td>
+</tr>`;
+
+// Offer detail table
+const offerTbody = document.querySelector('#offerTable tbody');
+data.offers.forEach((o, i) => {
+  const statusClass = o.status === '在职' ? 'badge-green' : (o.status === '待入职' ? 'badge-blue' : 'badge-gray');
+  offerTbody.innerHTML += `<tr>
+    <td>${i+1}</td>
+    <td>${o.name}</td>
+    <td>${o.school}</td>
+    <td>${o.edu}</td>
+    <td><span class="badge badge-blue">${o.city}</span></td>
+    <td>${o.project}</td>
+    <td>${o.team}</td>
+    <td><span class="badge ${statusClass}">${o.status}</span></td>
+  </tr>`;
+});
+
+// Demand table
+const demandTbody = document.querySelector('#demandTable tbody');
+data.demand.forEach(d => {
+  demandTbody.innerHTML += `<tr>
+    <td>${d.project}</td>
+    <td>${d.product}</td>
+    <td>${d.category}</td>
+    <td>${d.city}</td>
+    <td><strong>${d.count}</strong></td>
+  </tr>`;
+});
+</script>
+
+</body>
+</html>
