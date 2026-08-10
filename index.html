@@ -145,6 +145,13 @@
     </div>
   </div>
 
+  <div class="charts-row">
+    <div class="chart-box full-width">
+      <h3>各月Offer发放量</h3>
+      <canvas id="monthlyChart"></canvas>
+    </div>
+  </div>
+
   <!-- City & Category Cross-table -->
   <div class="section">
     <h2>城市 × 职位类 已完成Offer分布</h2>
@@ -218,6 +225,10 @@ const data = {
     labels: ["游戏美术","游戏策划","技术美术(TA)","UI/视觉设计","游戏客户端开发","测试与质量管理","项目管理","游戏运营"],
     offers: [16, 6, 3, 2, 2, 1, 1, 1],
     demand: [56, 7, 3, 15, 3, 10, 2, 21]
+  },
+  monthly_stats: {
+    labels: ["1月","2月","3月","4月","5月","6月","7月"],
+    counts: [1, 1, 0, 0, 3, 11, 16]
   },
   group_completion: [
     {name: "D项目组", offers: 20, demand: 34, rate: 58.8},
@@ -385,6 +396,35 @@ new Chart(document.getElementById('jobChart'), {
     indexAxis: 'y',
     plugins: { legend: { position: 'bottom' } },
     scales: { x: { beginAtZero: true, grid: { color: '#f1f5f9' } }, y: { grid: { display: false } } }
+  }
+});
+
+// Monthly Offer Distribution Chart
+new Chart(document.getElementById('monthlyChart'), {
+  type: 'bar',
+  data: {
+    labels: data.monthly_stats.labels,
+    datasets: [{
+      label: 'Offer发放量',
+      data: data.monthly_stats.counts,
+      backgroundColor: data.monthly_stats.counts.map(c => c === 0 ? '#e2e8f0' : '#6366f1'),
+      borderRadius: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function(ctx) { return '发放量: ' + ctx.raw + ' 人'; }
+        }
+      }
+    },
+    scales: {
+      x: { grid: { display: false } },
+      y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { stepSize: 2 }, title: { display: true, text: '人数' } }
+    }
   }
 });
 
